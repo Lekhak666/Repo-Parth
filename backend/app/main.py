@@ -1,11 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, HttpUrl
+
+from app.services.github import analyze_repository
+
 
 app = FastAPI(
     title="Repo-Parth API",
     description="AI-powered GitHub repository intelligence platform",
     version="0.1.0",
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,6 +21,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class RepositoryRequest(BaseModel):
+    repo_url: HttpUrl
 
 
 @app.get("/")
@@ -32,3 +41,8 @@ def health_check():
         "status": "healthy",
         "service": "repo-parth-backend",
     }
+
+
+@app.post("/api/repositories/analyze")
+async def analyze_repository_endpoint(request: RepositoryRequest):
+    return await analyze_repository(str(request.repo_url))
