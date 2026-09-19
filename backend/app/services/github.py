@@ -4,6 +4,8 @@ import httpx
 from fastapi import HTTPException
 
 from app.services.detector import detect_technologies
+from app.services.file_analyzer import find_important_files
+from app.services.structure import build_project_structure
 
 GITHUB_API = "https://api.github.com"
 
@@ -89,6 +91,10 @@ async def analyze_repository(repo_url: str) -> dict:
             for item in tree_data.get("tree", [])
         ]
 
+        technologies = detect_technologies(files)
+        important_files = find_important_files(files) 
+        project_structure = build_project_structure(files)
+
         return {
             "repository": {
                 "name": repository["name"],
@@ -104,5 +110,7 @@ async def analyze_repository(repo_url: str) -> dict:
             "file_count": len(files),
             "readme": readme,
             "tree_truncated": tree_data.get("truncated", False),
-            "technologies": detect_technologies(files),
+            "technologies": technologies,
+            "important_files": important_files,
+            "project_structure": project_structure,
         }
