@@ -1,18 +1,40 @@
+import os
 import re
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import HTTPException
 
 from app.services.detector import detect_technologies
 from app.services.file_analyzer import find_important_files
 from app.services.structure import build_project_structure
 
+
+# Load the root .env file
+BASE_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+)
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+
 GITHUB_API = "https://api.github.com"
+
 
 HEADERS = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2026-03-10",
 }
+
+
+# Optional GitHub authentication.
+#
+# If GITHUB_TOKEN exists, GitHub gives us a much higher API rate limit.
+# If it does not exist, Repo-Parth still works with unauthenticated access
+# until GitHub's public rate limit is reached.
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+if GITHUB_TOKEN:
+    HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
 
 def parse_github_url(repo_url: str) -> tuple[str, str]:
@@ -31,29 +53,63 @@ def parse_github_url(repo_url: str) -> tuple[str, str]:
     return owner, repo
 
 
+def raise_github_error(response: httpx.Response) -> None:
+    """
+    Convert common GitHub API errors into useful FastAPI errors.
+    """
+
+    if response.status_code == 401:
+        raise HTTPException(
+            status_code=401,
+            detail="GitHub authentication failed. Please check GITHUB_TOKEN.",
+        )
+
+    if response.status_code == 403:
+        remaining = response.headers.get("X-RateLimit-Remaining")
+
+        raise HTTPException(
+            status_code=429,
+            detail=(
+                "GitHub API rate limit exceeded. "
+                f"Remaining requests: {remaining or 'unknown'}. "
+                "Add a valid GITHUB_TOKEN to the root .env file."
+            ),
+        )
+
+    if response.status_code == 404:
+        raise HTTPException(
+            status_code=404,
+            detail="GitHub repository or file not found.",
+        )
+
+    response.raise_for_status()
+
+
 async def analyze_repository(repo_url: str) -> dict:
     owner, repo = parse_github_url(repo_url)
 
     async with httpx.AsyncClient(
         headers=HEADERS,
         timeout=20.0,
+        follow_redirects=True,
     ) as client:
 
+        # ---------------------------------------------------------
         # 1. Repository metadata
+        # ---------------------------------------------------------
+
         repo_response = await client.get(
             f"{GITHUB_API}/repos/{owner}/{repo}"
         )
 
-        if repo_response.status_code == 404:
-            raise HTTPException(
-                status_code=404,
-                detail="GitHub repository not found.",
-            )
+        raise_github_error(repo_response)
 
-        repo_response.raise_for_status()
         repository = repo_response.json()
 
+        # ---------------------------------------------------------
         # 2. Repository tree
+        # ---------------------------------------------------------
+
         default_branch = repository["default_branch"]
 
         tree_response = await client.get(
@@ -61,10 +117,14 @@ async def analyze_repository(repo_url: str) -> dict:
             params={"recursive": "true"},
         )
 
-        tree_response.raise_for_status()
+        raise_github_error(tree_response)
+
         tree_data = tree_response.json()
 
+        # ---------------------------------------------------------
         # 3. README
+        # ---------------------------------------------------------
+
         readme_response = await client.get(
             f"{GITHUB_API}/repos/{owner}/{repo}/readme"
         )
@@ -82,6 +142,10 @@ async def analyze_repository(repo_url: str) -> dict:
                 if raw_readme.status_code == 200:
                     readme = raw_readme.text
 
+        # ---------------------------------------------------------
+        # 4. Build repository file list
+        # ---------------------------------------------------------
+
         files = [
             {
                 "path": item["path"],
@@ -91,9 +155,19 @@ async def analyze_repository(repo_url: str) -> dict:
             for item in tree_data.get("tree", [])
         ]
 
+        # ---------------------------------------------------------
+        # 5. Analyze repository
+        # ---------------------------------------------------------
+
         technologies = detect_technologies(files)
+
         important_files = find_important_files(files)
+
         project_structure = build_project_structure(files)
+
+        # ---------------------------------------------------------
+        # 6. Return repository analysis
+        # ---------------------------------------------------------
 
         return {
             "repository": {
@@ -125,46 +199,49 @@ async def fetch_file_content(
     async with httpx.AsyncClient(
         headers=HEADERS,
         timeout=20.0,
+        follow_redirects=True,
     ) as client:
 
-        # Get repository metadata so we know the default branch
+        # ---------------------------------------------------------
+        # 1. Get repository metadata
+        # ---------------------------------------------------------
+
         repo_response = await client.get(
             f"{GITHUB_API}/repos/{owner}/{repo}"
         )
 
-        if repo_response.status_code == 404:
-            raise HTTPException(
-                status_code=404,
-                detail="GitHub repository not found.",
-            )
+        raise_github_error(repo_response)
 
-        repo_response.raise_for_status()
         repository = repo_response.json()
 
         default_branch = repository["default_branch"]
 
-        # Fetch the file from GitHub
+        # ---------------------------------------------------------
+        # 2. Fetch file metadata
+        # ---------------------------------------------------------
+
         file_response = await client.get(
             f"{GITHUB_API}/repos/{owner}/{repo}/contents/{file_path}",
             params={"ref": default_branch},
         )
 
-        if file_response.status_code == 404:
-            raise HTTPException(
-                status_code=404,
-                detail="File not found in the repository.",
-            )
-
-        file_response.raise_for_status()
+        raise_github_error(file_response)
 
         file_data = file_response.json()
 
-        # Make sure the selected path is actually a file
+        # ---------------------------------------------------------
+        # 3. Make sure it is actually a file
+        # ---------------------------------------------------------
+
         if file_data.get("type") != "file":
             raise HTTPException(
                 status_code=400,
                 detail="The selected path is not a file.",
             )
+
+        # ---------------------------------------------------------
+        # 4. Get raw file URL
+        # ---------------------------------------------------------
 
         download_url = file_data.get("download_url")
 
@@ -174,9 +251,31 @@ async def fetch_file_content(
                 detail="Unable to retrieve the file contents.",
             )
 
-        raw_response = await client.get(download_url)
+        # ---------------------------------------------------------
+        # 5. Download actual source code
+        # ---------------------------------------------------------
+
+        raw_headers = {}
+
+        if GITHUB_TOKEN:
+            raw_headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+
+        raw_response = await client.get(
+            download_url,
+            headers=raw_headers,
+        )
+
+        if raw_response.status_code == 403:
+            raise HTTPException(
+                status_code=429,
+                detail="GitHub rate limit exceeded while downloading file.",
+            )
 
         raw_response.raise_for_status()
+
+        # ---------------------------------------------------------
+        # 6. Return source file
+        # ---------------------------------------------------------
 
         return {
             "path": file_path,
