@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
+from app.services.ai import ask_repo_ai
 
 from app.services.github import (
     analyze_repository,
@@ -31,6 +32,33 @@ class RepositoryRequest(BaseModel):
 class FileContentRequest(BaseModel):
     repo_url: HttpUrl
     file_path: str
+
+
+class ChatRequest(BaseModel):
+    question: str
+    repository: dict
+    technologies: list[str]
+    important_files: list[dict]
+    project_structure: dict
+    source_files: list[dict]
+
+
+@app.post("/api/ai/chat")
+async def chat_with_repository(
+    request: ChatRequest,
+):
+    answer = await ask_repo_ai(
+        question=request.question,
+        repository=request.repository,
+        technologies=request.technologies,
+        important_files=request.important_files,
+        project_structure=request.project_structure,
+        source_files=request.source_files,
+    )
+
+    return {
+        "answer": answer,
+    }
 
 
 @app.get("/")
