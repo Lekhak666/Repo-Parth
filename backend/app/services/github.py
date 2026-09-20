@@ -92,7 +92,7 @@ async def analyze_repository(repo_url: str) -> dict:
         ]
 
         technologies = detect_technologies(files)
-        important_files = find_important_files(files) 
+        important_files = find_important_files(files)
         project_structure = build_project_structure(files)
 
         return {
@@ -113,4 +113,74 @@ async def analyze_repository(repo_url: str) -> dict:
             "technologies": technologies,
             "important_files": important_files,
             "project_structure": project_structure,
+        }
+
+
+async def fetch_file_content(
+    repo_url: str,
+    file_path: str,
+) -> dict:
+    owner, repo = parse_github_url(repo_url)
+
+    async with httpx.AsyncClient(
+        headers=HEADERS,
+        timeout=20.0,
+    ) as client:
+
+        # Get repository metadata so we know the default branch
+        repo_response = await client.get(
+            f"{GITHUB_API}/repos/{owner}/{repo}"
+        )
+
+        if repo_response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="GitHub repository not found.",
+            )
+
+        repo_response.raise_for_status()
+        repository = repo_response.json()
+
+        default_branch = repository["default_branch"]
+
+        # Fetch the file from GitHub
+        file_response = await client.get(
+            f"{GITHUB_API}/repos/{owner}/{repo}/contents/{file_path}",
+            params={"ref": default_branch},
+        )
+
+        if file_response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="File not found in the repository.",
+            )
+
+        file_response.raise_for_status()
+
+        file_data = file_response.json()
+
+        # Make sure the selected path is actually a file
+        if file_data.get("type") != "file":
+            raise HTTPException(
+                status_code=400,
+                detail="The selected path is not a file.",
+            )
+
+        download_url = file_data.get("download_url")
+
+        if not download_url:
+            raise HTTPException(
+                status_code=400,
+                detail="Unable to retrieve the file contents.",
+            )
+
+        raw_response = await client.get(download_url)
+
+        raw_response.raise_for_status()
+
+        return {
+            "path": file_path,
+            "content": raw_response.text,
+            "size": file_data.get("size"),
+            "type": file_data.get("type"),
         }
