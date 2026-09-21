@@ -50,15 +50,24 @@ interface AnalysisResult {
   tree_truncated: boolean;
 }
 
+interface FileRelationship {
+  source: string;
+  target: string;
+  type: string;
+  import?: string;
+}
+
 interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   sources?: string[];
+  relationships?: FileRelationship[];
 }
 
 function App() {
   const [repoUrl, setRepoUrl] = useState("");
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [analysis, setAnalysis] =
+    useState<AnalysisResult | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +80,8 @@ function App() {
   const [fileError, setFileError] = useState("");
 
   const [chatQuestion, setChatQuestion] = useState("");
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatMessages, setChatMessages] =
+    useState<ChatMessage[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
   const [chatError, setChatError] = useState("");
 
@@ -140,6 +150,7 @@ function App() {
     }
   };
 
+ 
   /* =========================================================
      RETURN TO REPOSITORY OVERVIEW
   ========================================================= */
@@ -156,7 +167,11 @@ function App() {
   ========================================================= */
 
   const askRepoParth = async () => {
-    if (!chatQuestion.trim() || !analysis || chatLoading) {
+    if (
+      !chatQuestion.trim() ||
+      !analysis ||
+      chatLoading
+    ) {
       return;
     }
 
@@ -213,6 +228,8 @@ function App() {
           role: "assistant",
           content: response.data.answer,
           sources: response.data.sources || [],
+          relationships:
+            response.data.relationships || [],
         },
       ]);
     } catch (error) {
@@ -232,7 +249,9 @@ function App() {
 
   const analyzeRepository = async () => {
     if (!repoUrl.trim()) {
-      setError("Please enter a GitHub repository URL.");
+      setError(
+        "Please enter a GitHub repository URL."
+      );
       return;
     }
 
@@ -250,12 +269,13 @@ function App() {
     setChatError("");
 
     try {
-      const response = await axios.post<AnalysisResult>(
-        "http://localhost:8000/api/repositories/analyze",
-        {
-          repo_url: repoUrl.trim(),
-        }
-      );
+      const response =
+        await axios.post<AnalysisResult>(
+          "http://localhost:8000/api/repositories/analyze",
+          {
+            repo_url: repoUrl.trim(),
+          }
+        );
 
       setAnalysis(response.data);
     } catch (err) {
@@ -320,7 +340,7 @@ function App() {
 
           <div className="command-repo">
             <span className="command-repo-label">
-              ANALYZING
+              ANALYZED
             </span>
 
             <span className="command-repo-name">
@@ -678,31 +698,41 @@ function App() {
                     <button
                       onClick={() =>
                         setChatQuestion(
-                          "How does this project start?"
+                          "How does authentication work?"
                         )
                       }
                     >
-                      How does this project start?
+                      How does authentication work?
                     </button>
 
                     <button
                       onClick={() =>
                         setChatQuestion(
-                          "What are the most important files?"
+                          "Trace the API request flow."
                         )
                       }
                     >
-                      What are the most important files?
+                      Trace the API request flow.
                     </button>
 
                     <button
                       onClick={() =>
                         setChatQuestion(
-                          "Explain the project structure."
+                          "Which files are most important?"
                         )
                       }
                     >
-                      Explain the project structure.
+                      Which files are most important?
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        setChatQuestion(
+                          "How are the main modules connected?"
+                        )
+                      }
+                    >
+                      How are the main modules connected?
                     </button>
                   </div>
                 </div>
@@ -795,6 +825,134 @@ function App() {
                             </div>
                           </div>
                         )}
+
+                      {/* =================================================
+                          FILE RELATIONSHIPS
+                      ================================================= */}
+
+                      {message.role ===
+                        "assistant" &&
+                        message.relationships &&
+                        message.relationships.length >
+                          0 && (
+                          <div className="chat-relationships">
+                            <div className="chat-relationships-title">
+                              File Connections
+                            </div>
+
+                            <div className="chat-relationships-list">
+                              {message.relationships
+                                .slice(0, 8)
+                                .map(
+                                  (
+                                    relationship,
+                                    relationshipIndex
+                                  ) => {
+                                    const sourceFile =
+                                      analysis.files.find(
+                                        (file) =>
+                                          file.path ===
+                                          relationship.source
+                                      );
+
+                                    const targetFile =
+                                      analysis.files.find(
+                                        (file) =>
+                                          file.path ===
+                                          relationship.target
+                                      );
+
+                                    const sourceName =
+                                      relationship.source
+                                        .split("/")
+                                        .pop() ||
+                                      relationship.source;
+
+                                    const targetName =
+                                      relationship.target
+                                        .split("/")
+                                        .pop() ||
+                                      relationship.target;
+
+                                    return (
+                                      <div
+                                        className="chat-relationship"
+                                        key={`${relationship.source}-${relationship.target}-${relationshipIndex}`}
+                                      >
+                                        <button
+                                          className="chat-relationship-file"
+                                          onClick={() => {
+                                            if (
+                                              sourceFile
+                                            ) {
+                                              selectFile(
+                                                sourceFile
+                                              );
+                                            }
+                                          }}
+                                          disabled={
+                                            !sourceFile
+                                          }
+                                          title={
+                                            relationship.source
+                                          }
+                                        >
+                                          <span className="chat-relationship-file-icon">
+                                            ↗
+                                          </span>
+
+                                          <span>
+                                            {sourceName}
+                                          </span>
+                                        </button>
+
+                                        <div className="chat-relationship-type">
+                                          <span className="chat-relationship-line" />
+
+                                          <span>
+                                            {
+                                              relationship.type
+                                            }
+                                          </span>
+
+                                          <span className="chat-relationship-arrow">
+                                            →
+                                          </span>
+                                        </div>
+
+                                        <button
+                                          className="chat-relationship-file"
+                                          onClick={() => {
+                                            if (
+                                              targetFile
+                                            ) {
+                                              selectFile(
+                                                targetFile
+                                              );
+                                            }
+                                          }}
+                                          disabled={
+                                            !targetFile
+                                          }
+                                          title={
+                                            relationship.target
+                                          }
+                                        >
+                                          <span className="chat-relationship-file-icon">
+                                            ↗
+                                          </span>
+
+                                          <span>
+                                            {targetName}
+                                          </span>
+                                        </button>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                            </div>
+                          </div>
+                        )}
                     </div>
                   </div>
                 )
@@ -817,7 +975,7 @@ function App() {
                     />
 
                     <span>
-                      Reading the repository...
+                      Tracing the repository...
                     </span>
                   </div>
                 </div>

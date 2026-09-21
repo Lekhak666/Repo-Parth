@@ -2980,3 +2980,685 @@ footer {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+   REPO-PARTH — PREMIUM COMMAND CENTER OVERRIDES
+   Phase 7: Demo Polish
+========================================================= */
+
+/* ---------------------------------------------------------
+   GLOBAL ATMOSPHERE
+--------------------------------------------------------- */
+
+body {
+  background:
+    radial-gradient(
+      circle at 50% -15%,
+      rgba(200, 155, 90, 0.055),
+      transparent 34%
+    ),
+    var(--bg);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+
+/* ---------------------------------------------------------
+   DASHBOARD — CINEMATIC DEPTH
+--------------------------------------------------------- */
+
+.dashboard {
+  position: relative;
+  isolation: isolate;
+}
+
+.dashboard::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(200, 155, 90, 0.018) 50%,
+      transparent 100%
+    );
+}
+
+.dashboard::after {
+  opacity: 0.45;
+}
+
+
+/* ---------------------------------------------------------
+   COMMAND HEADER
+--------------------------------------------------------- */
+
+.command-header {
+  position: relative;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(18, 16, 13, 0.96),
+      rgba(10, 9, 8, 0.92)
+    );
+
+  border-color: rgba(200, 155, 90, 0.18);
+
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.025),
+    0 14px 45px rgba(0, 0, 0, 0.22);
+
+  backdrop-filter: blur(18px);
+}
+
+.command-header-main > p {
+  letter-spacing: 0.04em;
+}
+
+
+/* ---------------------------------------------------------
+   COMMAND PANELS
+--------------------------------------------------------- */
+
+.command-panel-header,
+.source-header,
+.command-ai .ai-header {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018),
+      transparent
+    );
+
+  border-bottom-color: rgba(200, 155, 90, 0.12);
+}
+
+.command-panel-header h2 {
+  letter-spacing: -0.01em;
+}
+
+
+/* ---------------------------------------------------------
+   FILE EXPLORER
+--------------------------------------------------------- */
+
+.command-file {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 7px;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    color 160ms ease;
+}
+
+.command-file:hover {
+  background: rgba(200, 155, 90, 0.055);
+  border-color: rgba(200, 155, 90, 0.10);
+  transform: translateX(2px);
+}
+
+.command-file.selected {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(200, 155, 90, 0.12),
+      rgba(200, 155, 90, 0.035)
+    );
+
+  border-color: rgba(200, 155, 90, 0.24);
+
+  box-shadow:
+    inset 2px 0 0 var(--gold),
+    0 0 18px rgba(200, 155, 90, 0.045);
+}
+
+.command-file.selected::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+
+  transform: translateY(-50%);
+
+  border-radius: 50%;
+  background: var(--gold-light);
+
+  box-shadow:
+    0 0 8px rgba(237, 200, 121, 0.55);
+}
+
+
+/* ---------------------------------------------------------
+   SOURCE WORKSPACE
+--------------------------------------------------------- */
+
+.source-workspace {
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(200, 155, 90, 0.025),
+      transparent 42%
+    ),
+    var(--panel);
+}
+
+.source-header {
+  backdrop-filter: blur(14px);
+}
+
+.source-file-info h2 {
+  letter-spacing: -0.025em;
+}
+
+
+/* ---------------------------------------------------------
+   CODE AREA
+--------------------------------------------------------- */
+
+.source-workspace pre {
+  line-height: 1.72;
+  tab-size: 2;
+
+  scrollbar-color: #302a21 transparent;
+}
+
+.source-workspace code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+
+/* ---------------------------------------------------------
+   PARTH AI PANEL
+--------------------------------------------------------- */
+
+.command-ai {
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(200, 155, 90, 0.045),
+      transparent 38%
+    ),
+    var(--panel);
+}
+
+.command-ai .ai-header {
+  position: relative;
+}
+
+.command-ai .ai-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 34%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--gold),
+      transparent
+    );
+
+  opacity: 0.7;
+}
+
+
+/* ---------------------------------------------------------
+   AI EMPTY STATE
+--------------------------------------------------------- */
+
+.chat-empty {
+  padding: 28px 22px;
+}
+
+.chat-empty-icon {
+  position: relative;
+
+  border-color: rgba(200, 155, 90, 0.28);
+
+  box-shadow:
+    0 0 30px rgba(200, 155, 90, 0.07),
+    inset 0 0 20px rgba(200, 155, 90, 0.025);
+}
+
+.chat-empty-icon::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+
+  border: 1px solid rgba(200, 155, 90, 0.07);
+  border-radius: inherit;
+
+  animation: parthPulse 3s ease-in-out infinite;
+}
+
+@keyframes parthPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.98);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+.chat-empty h3 {
+  letter-spacing: -0.025em;
+}
+
+.chat-empty p {
+  max-width: 320px;
+  line-height: 1.65;
+}
+
+
+/* ---------------------------------------------------------
+   CHAT MESSAGES
+--------------------------------------------------------- */
+
+.chat-message {
+  animation: messageIn 220ms ease-out both;
+}
+
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message.assistant .chat-message-content {
+  border-color: rgba(200, 155, 90, 0.13);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(200, 155, 90, 0.045),
+      rgba(255, 255, 255, 0.012)
+    );
+
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.16);
+}
+
+.chat-message.user .chat-message-content {
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+
+/* ---------------------------------------------------------
+   SOURCE / EVIDENCE BUTTONS
+--------------------------------------------------------- */
+
+.chat-sources {
+  margin-top: 16px;
+  padding-top: 13px;
+
+  border-top-color: rgba(200, 155, 90, 0.11);
+}
+
+.chat-sources-title {
+  color: var(--gold-light);
+  letter-spacing: 0.12em;
+  font-size: 10px;
+}
+
+.chat-source {
+  position: relative;
+
+  border-color: rgba(200, 155, 90, 0.11);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.018),
+      rgba(200, 155, 90, 0.025)
+    );
+
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.chat-source:hover {
+  border-color: rgba(200, 155, 90, 0.34);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(200, 155, 90, 0.09),
+      rgba(200, 155, 90, 0.025)
+    );
+
+  transform: translateY(-1px);
+}
+
+
+/* ---------------------------------------------------------
+   CHAT INPUT
+--------------------------------------------------------- */
+
+.chat-input-area {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 7, 0),
+      rgba(8, 8, 7, 0.95) 20%
+    );
+
+  backdrop-filter: blur(14px);
+}
+
+.chat-input-area textarea {
+  border-color: rgba(200, 155, 90, 0.16);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.025),
+      rgba(200, 155, 90, 0.025)
+    );
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.chat-input-area textarea:focus {
+  border-color: rgba(200, 155, 90, 0.48);
+
+  box-shadow:
+    0 0 0 3px rgba(200, 155, 90, 0.055),
+    0 0 24px rgba(200, 155, 90, 0.055);
+
+  background: rgba(255, 255, 255, 0.028);
+}
+
+
+/* ---------------------------------------------------------
+   INTELLIGENCE STRIP
+--------------------------------------------------------- */
+
+.intelligence-strip {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(200, 155, 90, 0.045),
+      rgba(200, 155, 90, 0.018)
+    );
+
+  border-color: rgba(200, 155, 90, 0.15);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 10px 35px rgba(0, 0, 0, 0.14);
+}
+
+.intelligence-item {
+  transition: background 160ms ease;
+}
+
+.intelligence-item:hover {
+  background: rgba(200, 155, 90, 0.035);
+}
+
+.intelligence-item > span:first-child {
+  letter-spacing: 0.12em;
+}
+
+.intelligence-item strong {
+  color: var(--gold-light);
+
+  text-shadow:
+    0 0 18px rgba(237, 200, 121, 0.12);
+}
+
+.intelligence-tags span {
+  border-color: rgba(200, 155, 90, 0.15);
+
+  background: rgba(200, 155, 90, 0.035);
+
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.intelligence-tags span:hover {
+  border-color: rgba(200, 155, 90, 0.32);
+  background: rgba(200, 155, 90, 0.08);
+}
+
+
+/* ---------------------------------------------------------
+   PREMIUM SCROLLBARS
+--------------------------------------------------------- */
+
+.command-panel ::-webkit-scrollbar-thumb,
+.source-workspace ::-webkit-scrollbar-thumb,
+.command-ai ::-webkit-scrollbar-thumb {
+  background: #29251e;
+  border-radius: 999px;
+}
+
+.command-panel ::-webkit-scrollbar-thumb:hover,
+.source-workspace ::-webkit-scrollbar-thumb:hover,
+.command-ai ::-webkit-scrollbar-thumb:hover {
+  background: #40372b;
+}
+
+
+/* ---------------------------------------------------------
+   REDUCE MOTION FOR ACCESSIBILITY
+--------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================
+   PHASE 7.3 — RELATIONSHIP CARDS
+========================================================= */
+
+.chat-relationships {
+  margin-top: 16px;
+  padding-top: 14px;
+
+  border-top: 1px solid rgba(200, 155, 90, 0.11);
+}
+
+.chat-relationships-title {
+  margin-bottom: 9px;
+
+  color: var(--gold-light);
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.chat-relationships-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.chat-relationship {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+
+  min-width: 0;
+  padding: 8px;
+
+  border: 1px solid rgba(200, 155, 90, 0.10);
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.018),
+      rgba(200, 155, 90, 0.025)
+    );
+
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.chat-relationship:hover {
+  border-color: rgba(200, 155, 90, 0.25);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(200, 155, 90, 0.065),
+      rgba(200, 155, 90, 0.018)
+    );
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 20px rgba(0, 0, 0, 0.16);
+}
+
+
+/* FILE BUTTON */
+
+.chat-relationship-file {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 7px 8px;
+
+  border: 1px solid rgba(200, 155, 90, 0.08);
+  border-radius: 7px;
+
+  background: rgba(255, 255, 255, 0.018);
+
+  color: var(--text-secondary);
+
+  text-align: left;
+
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.chat-relationship-file:hover {
+  border-color: rgba(200, 155, 90, 0.24);
+
+  background: rgba(200, 155, 90, 0.075);
+
+  color: var(--gold-bright);
+}
+
+.chat-relationship-file-icon {
+  flex: 0 0 auto;
+
+  color: var(--gold-soft);
+
+  font-size: 11px;
+}
+
+.chat-relationship-file span:last-child {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+
+/* CONNECTION */
+
+.chat-relationship-type {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  color: var(--text-muted);
+
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+.chat-relationship-line {
+  width: 18px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--gold-muted)
+    );
+}
+
+.chat-relationship-arrow {
+  color: var(--gold);
+
+  font-size: 12px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+  .chat-relationship {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .chat-relationship-type {
+    justify-content: center;
+  }
+
+  .chat-relationship-line {
+    display: none;
+  }
+}
+
