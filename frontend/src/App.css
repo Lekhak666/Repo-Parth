@@ -3662,3 +3662,1120 @@ body {
   }
 }
 
+/* =========================================================
+   PHASE 8 — PREMIUM MOTION LAYER
+   Subtle motion • depth • responsiveness • accessibility
+========================================================= */
+
+/* ---------------------------------------------------------
+   MOTION TOKENS
+--------------------------------------------------------- */
+
+:root {
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 420ms;
+
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --gold-hairline: rgba(200, 155, 90, 0.12);
+  --gold-hover: rgba(200, 155, 90, 0.22);
+}
+
+
+/* ---------------------------------------------------------
+   GLOBAL — REMOVE JARRING INTERACTION FEEL
+--------------------------------------------------------- */
+
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  transition-timing-function: var(--ease-premium);
+}
+
+
+/* ---------------------------------------------------------
+   DASHBOARD ENTRANCE
+--------------------------------------------------------- */
+
+.dashboard {
+  animation: parthDashboardEnter 560ms var(--ease-premium) both;
+}
+
+.topbar {
+  animation: parthTopbarEnter 420ms var(--ease-premium) 40ms both;
+}
+
+.command-header {
+  animation: parthHeaderEnter 500ms var(--ease-premium) 80ms both;
+}
+
+.command-explorer {
+  animation: parthPanelEnter 520ms var(--ease-premium) 120ms both;
+}
+
+.command-source {
+  animation: parthPanelEnter 520ms var(--ease-premium) 160ms both;
+}
+
+.command-ai {
+  animation: parthPanelEnter 520ms var(--ease-premium) 200ms both;
+}
+
+.intelligence-strip {
+  animation: parthPanelEnter 520ms var(--ease-premium) 240ms both;
+}
+
+
+/* ---------------------------------------------------------
+   PANELS — SUBTLE DEPTH
+--------------------------------------------------------- */
+
+.command-explorer,
+.command-source,
+.command-ai {
+  transition:
+    border-color var(--motion-base) ease,
+    box-shadow var(--motion-base) ease,
+    background var(--motion-base) ease;
+}
+
+.command-explorer:hover,
+.command-source:hover,
+.command-ai:hover {
+  border-color: var(--gold-hairline);
+
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(200, 155, 90, 0.025);
+}
+
+
+/* ---------------------------------------------------------
+   FILE EXPLORER
+--------------------------------------------------------- */
+
+.command-folder {
+  transition:
+    color var(--motion-fast) ease,
+    background var(--motion-fast) ease;
+}
+
+.command-folder:hover {
+  transform: translateX(2px);
+}
+
+.command-file {
+  position: relative;
+
+  transition:
+    color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-premium);
+}
+
+.command-file::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 50%;
+
+  width: 2px;
+  height: 0;
+
+  border-radius: 2px;
+
+  background: var(--gold);
+
+  transform: translateY(-50%);
+
+  transition:
+    height var(--motion-fast) var(--ease-premium),
+    opacity var(--motion-fast) ease;
+  
+  opacity: 0;
+}
+
+.command-file:hover {
+  transform: translateX(2px);
+}
+
+.command-file:hover::before {
+  height: 55%;
+  opacity: 0.7;
+}
+
+.command-file.selected {
+  box-shadow:
+    inset 2px 0 0 var(--gold),
+    inset 0 0 18px rgba(200, 155, 90, 0.025);
+}
+
+.command-file.selected::before {
+  height: 68%;
+  opacity: 1;
+}
+
+
+/* ---------------------------------------------------------
+   SOURCE WORKSPACE
+--------------------------------------------------------- */
+
+.source-workspace {
+  transition:
+    border-color var(--motion-base) ease,
+    box-shadow var(--motion-base) ease;
+}
+
+.source-header {
+  transition:
+    background var(--motion-base) ease,
+    border-color var(--motion-base) ease;
+}
+
+.source-file-info {
+  transition:
+    transform var(--motion-base) var(--ease-premium);
+}
+
+.source-file-info:hover {
+  transform: translateX(2px);
+}
+
+.source-file-icon {
+  transition:
+    transform var(--motion-base) var(--ease-premium),
+    color var(--motion-fast) ease;
+}
+
+.source-file-info:hover .source-file-icon {
+  transform: scale(1.06);
+  color: var(--gold-light);
+}
+
+
+/* ---------------------------------------------------------
+   PARTH AI — HEADER PRESENCE
+--------------------------------------------------------- */
+
+.command-ai .ai-header {
+  position: relative;
+
+  transition:
+    background var(--motion-base) ease,
+    border-color var(--motion-base) ease;
+}
+
+.command-ai .ai-header::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(200, 155, 90, 0.18),
+      transparent
+    );
+
+  opacity: 0.55;
+}
+
+.ai-symbol {
+  transition:
+    transform var(--motion-slow) var(--ease-premium),
+    box-shadow var(--motion-base) ease;
+}
+
+.ai-symbol:hover {
+  transform: rotate(-2deg) scale(1.04);
+
+  box-shadow:
+    0 0 22px rgba(200, 155, 90, 0.08);
+}
+
+.ai-status {
+  transition:
+    color var(--motion-fast) ease,
+    opacity var(--motion-fast) ease;
+}
+
+
+/* ---------------------------------------------------------
+   CHAT MESSAGES
+--------------------------------------------------------- */
+
+.chat-message {
+  animation: parthMessageEnter 340ms var(--ease-premium) both;
+}
+
+.chat-message.user {
+  transition:
+    transform var(--motion-fast) var(--ease-premium);
+}
+
+.chat-message.user:hover {
+  transform: translateX(-2px);
+}
+
+.chat-message.assistant {
+  transition:
+    transform var(--motion-fast) var(--ease-premium);
+}
+
+.chat-message.assistant:hover {
+  transform: translateX(2px);
+}
+
+
+/* ---------------------------------------------------------
+   EVIDENCE / SOURCE BUTTONS
+--------------------------------------------------------- */
+
+.chat-source {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-premium),
+    box-shadow var(--motion-fast) ease;
+}
+
+.chat-source::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      110deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.055) 50%,
+      transparent 75%
+    );
+
+  transform: translateX(-120%);
+
+  transition:
+    transform 520ms var(--ease-soft);
+}
+
+.chat-source:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 16px rgba(0, 0, 0, 0.12);
+}
+
+.chat-source:hover::after {
+  transform: translateX(120%);
+}
+
+
+/* ---------------------------------------------------------
+   RELATIONSHIP CARDS
+--------------------------------------------------------- */
+
+.chat-relationship {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    border-color var(--motion-base) ease,
+    background var(--motion-base) ease,
+    transform var(--motion-base) var(--ease-premium),
+    box-shadow var(--motion-base) ease;
+}
+
+.chat-relationship::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(200, 155, 90, 0.045) 50%,
+      transparent 80%
+    );
+
+  transform: translateX(-110%);
+
+  transition:
+    transform 650ms var(--ease-soft);
+}
+
+.chat-relationship:hover::after {
+  transform: translateX(110%);
+}
+
+.chat-relationship-file {
+  transition:
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-premium);
+}
+
+.chat-relationship-file:hover {
+  transform: translateY(-1px);
+}
+
+.chat-relationship-arrow {
+  transition:
+    transform var(--motion-fast) var(--ease-premium),
+    color var(--motion-fast) ease;
+}
+
+.chat-relationship:hover .chat-relationship-arrow {
+  transform: translateX(2px);
+  color: var(--gold-light);
+}
+
+
+/* ---------------------------------------------------------
+   AI INPUT
+--------------------------------------------------------- */
+
+.chat-input-area {
+  transition:
+    border-color var(--motion-base) ease,
+    box-shadow var(--motion-base) ease;
+}
+
+.chat-input-area:focus-within {
+  border-color: rgba(200, 155, 90, 0.25);
+
+  box-shadow:
+    0 0 0 1px rgba(200, 155, 90, 0.045),
+    0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.chat-input-area textarea {
+  transition:
+    color var(--motion-fast) ease,
+    background var(--motion-fast) ease;
+}
+
+.chat-input-area textarea:focus {
+  background: rgba(200, 155, 90, 0.012);
+}
+
+
+/* ---------------------------------------------------------
+   ASK AI BUTTON
+--------------------------------------------------------- */
+
+.ask-ai-button {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform var(--motion-fast) var(--ease-premium),
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+
+.ask-ai-button::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      105deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 75%
+    );
+
+  transform: translateX(-130%);
+
+  transition:
+    transform 600ms var(--ease-soft);
+}
+
+.ask-ai-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 22px rgba(0, 0, 0, 0.18);
+}
+
+.ask-ai-button:hover::after {
+  transform: translateX(130%);
+}
+
+.ask-ai-button:active {
+  transform: translateY(0) scale(0.985);
+}
+
+
+/* ---------------------------------------------------------
+   SUGGESTED QUESTIONS
+--------------------------------------------------------- */
+
+.suggested-questions button {
+  transition:
+    transform var(--motion-fast) var(--ease-premium),
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+
+.suggested-questions button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.suggested-questions button:active {
+  transform: translateY(0) scale(0.985);
+}
+
+
+/* ---------------------------------------------------------
+   INTELLIGENCE STRIP
+--------------------------------------------------------- */
+
+.intelligence-item {
+  transition:
+    background var(--motion-base) ease,
+    border-color var(--motion-base) ease,
+    transform var(--motion-base) var(--ease-premium);
+}
+
+.intelligence-item:hover {
+  transform: translateY(-1px);
+}
+
+.intelligence-tags span {
+  transition:
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-premium);
+}
+
+.intelligence-tags span:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(200, 155, 90, 0.24);
+
+  background: rgba(200, 155, 90, 0.055);
+
+  color: var(--gold-light);
+}
+
+
+/* ---------------------------------------------------------
+   TOPBAR ACTIONS
+--------------------------------------------------------- */
+
+.new-analysis,
+.repo-external-link,
+.source-close {
+  transition:
+    transform var(--motion-fast) var(--ease-premium),
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
+}
+
+.new-analysis:hover,
+.repo-external-link:hover,
+.source-close:hover {
+  transform: translateY(-1px);
+}
+
+.new-analysis:active,
+.repo-external-link:active,
+.source-close:active {
+  transform: translateY(0) scale(0.985);
+}
+
+
+/* ---------------------------------------------------------
+   KEYFRAMES
+--------------------------------------------------------- */
+
+@keyframes parthDashboardEnter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes parthTopbarEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes parthHeaderEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes parthPanelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes parthMessageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+--------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE — KEEP MOTION LIGHT
+--------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .command-explorer:hover,
+  .command-source:hover,
+  .command-ai:hover {
+    box-shadow: none;
+  }
+
+  .command-file:hover,
+  .chat-relationship:hover,
+  .intelligence-item:hover {
+    transform: none;
+  }
+
+  .chat-source:hover,
+  .chat-relationship-file:hover,
+  .suggested-questions button:hover {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   PHASE 9A — RESPONSIVE / DEMO HARDENING
+   Command Center viewport resilience
+========================================================= */
+
+
+/* ---------------------------------------------------------
+   GLOBAL OVERFLOW SAFETY
+--------------------------------------------------------- */
+
+html,
+body,
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea {
+  max-width: 100%;
+}
+
+
+/* ---------------------------------------------------------
+   LARGE LAPTOP / STANDARD DESKTOP
+   901px — 1200px
+--------------------------------------------------------- */
+
+@media (max-width: 1200px) and (min-width: 901px) {
+  .command-explorer {
+    min-width: 0;
+  }
+
+  .command-source {
+    min-width: 0;
+  }
+
+  .command-ai {
+    min-width: 0;
+  }
+
+  .command-file span,
+  .source-file-info h2,
+  .chat-message-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .intelligence-strip {
+    min-width: 0;
+  }
+
+  .intelligence-item {
+    min-width: 0;
+  }
+
+  .intelligence-tags {
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   COMPACT LAPTOP
+   761px — 900px
+
+   Keep the Command Center concept, but give the
+   source workspace and AI enough breathing room.
+--------------------------------------------------------- */
+
+@media (max-width: 900px) and (min-width: 761px) {
+  .command-header {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .command-explorer,
+  .command-source,
+  .command-ai {
+    min-width: 0;
+  }
+
+  .command-file {
+    min-width: 0;
+  }
+
+  .command-file span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .source-file-info {
+    min-width: 0;
+  }
+
+  .source-file-info h2 {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chat-message-content {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .chat-source {
+    max-width: 100%;
+  }
+
+  .chat-relationship {
+    min-width: 0;
+  }
+
+  .chat-relationship-file {
+    min-width: 0;
+  }
+
+  .chat-relationship-file span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .intelligence-strip {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .intelligence-item {
+    min-width: 0;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   <= 760px
+
+   The desktop Command Center becomes a vertical
+   workspace instead of squeezing everything.
+--------------------------------------------------------- */
+
+@media (max-width: 760px) {
+
+  /* ---------- GLOBAL ---------- */
+
+  body {
+    min-width: 0;
+  }
+
+  .dashboard {
+    width: 100%;
+    min-width: 0;
+  }
+
+
+  /* ---------- TOP BAR ---------- */
+
+  .topbar {
+    min-width: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+
+    gap: 8px;
+  }
+
+  .topbar > * {
+    min-width: 0;
+  }
+
+
+  /* ---------- REPOSITORY HEADER ---------- */
+
+  .command-header {
+    min-width: 0;
+
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .command-header-main {
+    min-width: 0;
+  }
+
+  .command-header-main > p {
+    max-width: 100%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  /* ---------- THREE PANE WORKSPACE ---------- */
+
+  .command-workspace {
+    min-width: 0;
+
+    grid-template-columns: 1fr;
+  }
+
+  .command-explorer,
+  .command-source,
+  .command-ai {
+    min-width: 0;
+    width: 100%;
+  }
+
+
+  /* ---------- EXPLORER ---------- */
+
+  .command-explorer {
+    max-height: 280px;
+    overflow: hidden;
+  }
+
+  .command-folder-files {
+    max-height: 210px;
+    overflow-y: auto;
+  }
+
+  .command-file {
+    min-width: 0;
+  }
+
+  .command-file span {
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  /* ---------- SOURCE ---------- */
+
+  .source-workspace {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .source-header {
+    min-width: 0;
+  }
+
+  .source-file-info {
+    min-width: 0;
+  }
+
+  .source-file-info h2 {
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .source-code-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  /* ---------- PARTH ---------- */
+
+  .command-ai {
+    min-height: 460px;
+  }
+
+  .chat-messages {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .chat-message {
+    max-width: 100%;
+  }
+
+  .chat-message-content {
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .chat-sources {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .chat-source {
+    max-width: 100%;
+  }
+
+
+  /* ---------- RELATIONSHIPS ---------- */
+
+  .chat-relationships {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .chat-relationship {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .chat-relationship-file {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .chat-relationship-file span:last-child {
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  /* ---------- AI INPUT ---------- */
+
+  .chat-input-area {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .chat-input-area textarea {
+    min-width: 0;
+    width: 100%;
+
+    overflow-x: hidden;
+  }
+
+
+  /* ---------- INTELLIGENCE STRIP ---------- */
+
+  .intelligence-strip {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .intelligence-item {
+    flex: 0 0 auto;
+    min-width: 150px;
+  }
+
+  .intelligence-tags {
+    max-width: 100%;
+    overflow-x: auto;
+
+    scrollbar-width: none;
+  }
+
+  .intelligence-tags::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   VERY SMALL PHONES
+   <= 420px
+--------------------------------------------------------- */
+
+@media (max-width: 420px) {
+
+  .topbar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .command-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .command-explorer {
+    max-height: 240px;
+  }
+
+  .command-ai {
+    min-height: 430px;
+  }
+
+  .chat-input-area textarea {
+    font-size: 13px;
+  }
+
+  .intelligence-item {
+    min-width: 135px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   DEMO SAFETY — PREVENT GIANT TEXT / CODE FROM
+   ESCAPING ITS CONTAINER
+--------------------------------------------------------- */
+
+.source-code-wrapper,
+.source-code-wrapper pre,
+.source-code-wrapper code {
+  max-width: 100%;
+}
+
+.source-code-wrapper pre,
+.source-code-wrapper code {
+  overflow-wrap: normal;
+}
+
+
+/* ---------------------------------------------------------
+   TOUCH DEVICES
+--------------------------------------------------------- */
+
+@media (hover: none) and (pointer: coarse) {
+  .command-file:hover,
+  .chat-source:hover,
+  .chat-relationship:hover,
+  .chat-relationship-file:hover,
+  .intelligence-item:hover,
+  .intelligence-tags span:hover,
+  .suggested-questions button:hover {
+    transform: none;
+  }
+
+  .chat-source::after,
+  .chat-relationship::after,
+  .ask-ai-button::after {
+    display: none;
+  }
+}
+
