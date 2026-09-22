@@ -16,6 +16,9 @@ import {
 import Logo from "./assets/repo-parth-logo.png";
 import "./App.css";
 
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 interface Repository {
   name: string;
   full_name: string;
@@ -134,7 +137,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/repositories/file",
+        `${API_URL}/api/repositories/file`,
         {
           repo_url: repoUrl,
           file_path: file.path,
@@ -209,7 +212,7 @@ function App() {
           : [];
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/ai/chat",
+        `${API_URL}/api/ai/chat`,
         {
           question,
           repository: analysis.repository,
@@ -271,7 +274,7 @@ function App() {
     try {
       const response =
         await axios.post<AnalysisResult>(
-          "http://localhost:8000/api/repositories/analyze",
+          `${API_URL}/api/repositories/analyze`,
           {
             repo_url: repoUrl.trim(),
           }
